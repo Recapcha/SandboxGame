@@ -2,106 +2,111 @@
 
 #pragma once
 
-#include "CoreMinimal.h" //определены некоторые базы данных константы, идет в начале
+#include "CoreMinimal.h"         //определены некоторые базы данных константы, идет в начале
 #include "GameFramework/Actor.h" //наследуемся от актора, указывает заголовочный файл где объявлен актор
 #include "Components/StaticMeshComponent.h"
-#include "BaseGeometryActor.generated.h" //идет последним всегда 
+#include "BaseGeometryActor.generated.h" //идет последним всегда
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnColorChanged, const FLinearColor&, Color, const FString&, Name);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnTimerFinished, AActor*);
 
-
+//тип ENUM
 UENUM(BlueprintType)
 enum class EMovementType : uint8
 {
-	Sin,
-	Static
+    Sin,
+    Static
 };
 
 USTRUCT(BlueprintType)
 struct FGeometryData
 {
-	GENERATED_USTRUCT_BODY()
+    GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float Amplitude = 50.0f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    float Amplitude = 50.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float Frequency = 2.0f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    float Frequency = 2.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	EMovementType MoveType = EMovementType::Static;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    EMovementType MoveType = EMovementType::Static;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Design")
-	FLinearColor Color = FLinearColor::Black;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Design")
+    FLinearColor Color = FLinearColor::Black;
 
-	UPROPERTY(EditAnywhere, Category = "Design")
-	float TimerRate = 1.0f;
+    UPROPERTY(EditAnywhere, Category = "Design")
+    float TimerRate = 1.0f;
 };
 
+//тело актора
 UCLASS()
 class GAMEC_API ABaseGeometryActor : public AActor
 {
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	ABaseGeometryActor();
+    GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere)
-		UStaticMeshComponent* BaseMesh;
+public:
+    // Sets default values for this actor's properties
+    //конструктор класса
+    ABaseGeometryActor();
 
-	void SetGeometryData(const FGeometryData& Data) { GeometryData = Data; }
+    UPROPERTY(VisibleAnywhere)
+    UStaticMeshComponent* BaseMesh;
 
-	UFUNCTION(BlueprintCallable)
-	FGeometryData GetGeometryData() const {return GeometryData; }
+    void SetGeometryData(const FGeometryData& Data) { GeometryData = Data; }
 
-	UPROPERTY(BlueprintAssignable)
-	FOnColorChanged OnColorChanged;
+    UFUNCTION(BlueprintCallable)
+    FGeometryData GetGeometryData() const { return GeometryData; }
 
-	FOnTimerFinished OnTimerFinished;
+    UPROPERTY(BlueprintAssignable)
+    FOnColorChanged OnColorChanged;
 
+    FOnTimerFinished OnTimerFinished;
+
+    //находятся под protected что бы наследники могли обращаться к ним
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GeometryData")
-	FGeometryData GeometryData;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GeometryData")
+    FGeometryData GeometryData;
 
-	UPROPERTY(EditAnywhere, Category = "Weapon")
-	int32 WeaponsNum = 4;
+    UPROPERTY(EditAnywhere, Category = "Weapon")
+    int32 WeaponsNum = 4;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Stat")
-	int32 KillsNum = 7;
+    UPROPERTY(EditDefaultsOnly, Category = "Stat")
+    int32 KillsNum = 7;
 
-	UPROPERTY(EditInstanceOnly, Category = "Health")
-	float Health = 34.1535633;
+    UPROPERTY(EditInstanceOnly, Category = "Health")
+    float Health = 34.1535633;
 
-	UPROPERTY(EditAnywhere, Category = "Health")
-	bool IsDead = false;
+    UPROPERTY(EditAnywhere, Category = "Health")
+    bool IsDead = false;
 
-	UPROPERTY(VisibleAnywhere, Category = "Weapon")
-	bool HasWeapon = true;
+    UPROPERTY(VisibleAnywhere, Category = "Weapon")
+    bool HasWeapon = true;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+public:
+    //виртуальная функция тика, вынесена отдельно 
+    // Called every frame
+    virtual void Tick(float DeltaTime) override;
 
 private:
-	FVector InitialLocation;
-	FTimerHandle TimerHandle;
+    //приватные переменные 
+    FVector InitialLocation;
+    FTimerHandle TimerHandle;
 
-	const int32 MaxTimerCount = 5;
-	int32 TimerCount = 0;
+    const int32 MaxTimerCount = 5;
+    int32 TimerCount = 0;
 
-	void PrintTypes();
-	void PrintStringTypes();
-	void PrintTransform();
-	void HandleMovement();
+    void PrintTypes();
+    void PrintStringTypes();
+    void PrintTransform();
+    void HandleMovement();
 
-	void SetColor(const FLinearColor& Color);
+    void SetColor(const FLinearColor& Color);
 
-	void OnTimerFired();
+    void OnTimerFired();
 };

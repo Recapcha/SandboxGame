@@ -7,6 +7,7 @@
 DEFINE_LOG_CATEGORY_STATIC(LogGeometryHub, All, All)
 
 // Sets default values
+//конструктор
 AGeometryHubActor::AGeometryHubActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -15,6 +16,7 @@ AGeometryHubActor::AGeometryHubActor()
 }
 
 // Called when the game starts or when spawned
+//переопределение виртуальной функции begin play 
 void AGeometryHubActor::BeginPlay()
 {
 	Super::BeginPlay();
