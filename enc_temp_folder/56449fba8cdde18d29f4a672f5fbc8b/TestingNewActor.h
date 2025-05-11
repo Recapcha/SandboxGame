@@ -52,24 +52,11 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "Health")
     bool HasWeapon = true;
 
-
-    //Две переменные, отвечающие за амплитуду и частоту колебаний для логики движения объектов 
-    UPROPERTY(EditAnywhere, Category = "Movement")
-    float Amplitude = 50.0f;
-
-    UPROPERTY(EditAnywhere, Category = "Movement")
-    float Frequency = 2.0f;
-
 public:
     // Called every frame
-    virtual void
-    Tick(float DeltaTime) override;
+    virtual void Tick(float DeltaTime) override;
 
 private:
-    //Кешшированная переменная, которая содержит начальное положение актора
-    FVector InitialLocation;
-
     void printTypes();
     void printStringTypes();
-    void printTransform();
 };

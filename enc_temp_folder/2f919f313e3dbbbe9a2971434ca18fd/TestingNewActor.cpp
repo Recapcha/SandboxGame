@@ -24,10 +24,27 @@ void ATestingNewActor::BeginPlay()
 {
     Super::BeginPlay();
 
-    //доп функци€ получени€ локации актора
-    //так же можно сделать через Transform.GetLocation()
-    //ѕрисваиваем при создании запуске игры 
-    InitialLocation = GetActorLocation();
+    //создаем переменную типа FTransform и присваиваем туда возвращаемое значение функции GetActorTransform()
+    FTransform Transform = GetActorTransform();
+
+    //ѕрисваиваение основных XYZ переменных
+    FVector Location = Transform.GetLocation();
+    FRotator Rotator = Transform.Rotator();
+    FVector Scale = Transform.GetScale3D();
+
+    //название актора 
+    UE_LOG(LogForTestingNewActor, Warning, TEXT("Actor name is %s"), *GetName());
+
+    //Transform
+    UE_LOG(LogForTestingNewActor, Warning, TEXT("Transform %s"), *Transform.ToString());
+
+    //XYZ
+    UE_LOG(LogForTestingNewActor, Warning, TEXT("Location %s"), *Location.ToString());
+    UE_LOG(LogForTestingNewActor, Warning, TEXT("Rotator %s"), *Rotator.ToString());
+    UE_LOG(LogForTestingNewActor, Warning, TEXT("Scale %s"), *Scale.ToString());
+
+    //Ѕолее информативный и подробный показ Transform 
+    UE_LOG(LogForTestingNewActor, Error, TEXT("Human transform %s"), *Transform.ToHumanReadableString());
 
     //printStringTypes();
     //printTypes();
@@ -37,13 +54,6 @@ void ATestingNewActor::BeginPlay()
 void ATestingNewActor::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
-    //–абота в Tick
-    //¬ переменную CurrentLocation, текующей позиции. типа FVector присваиваем 
-    FVector CurrentLocation = GetActorLocation();
-    float time = GetWorld()->GetTimeSeconds();
-    CurrentLocation.Z = InitialLocation.Z + Amplitude * FMath::Sin(Frequency * time);
-    SetActorLocation(CurrentLocation);
 }
 
 void ATestingNewActor::printTypes()
@@ -115,29 +125,4 @@ void ATestingNewActor::printStringTypes()
     //цвет и им€, следующии остаютс€ без изменени€. “ак же в последнем имеетс€ возможнсть помен€ть размер
     GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, Name);
     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, Stat, true, FVector2D(1.5f, 1.5f));
-}
-
-void ATestingNewActor::printTransform()
-{
-    //создаем переменную типа FTransform и присваиваем туда возвращаемое значение функции GetActorTransform()
-    FTransform Transform = GetActorTransform();
-
-    //ѕрисваиваение основных XYZ переменных
-    FVector Location = Transform.GetLocation();
-    FRotator Rotator = Transform.Rotator();
-    FVector Scale = Transform.GetScale3D();
-
-    //название актора
-    UE_LOG(LogForTestingNewActor, Warning, TEXT("Actor name is %s"), *GetName());
-
-    //Transform
-    UE_LOG(LogForTestingNewActor, Warning, TEXT("Transform %s"), *Transform.ToString());
-
-    //XYZ
-    UE_LOG(LogForTestingNewActor, Warning, TEXT("Location %s"), *Location.ToString());
-    UE_LOG(LogForTestingNewActor, Warning, TEXT("Rotator %s"), *Rotator.ToString());
-    UE_LOG(LogForTestingNewActor, Warning, TEXT("Scale %s"), *Scale.ToString());
-
-    //Ѕолее информативный и подробный показ Transform
-    UE_LOG(LogForTestingNewActor, Error, TEXT("Human transform %s"), *Transform.ToHumanReadableString());
 }
