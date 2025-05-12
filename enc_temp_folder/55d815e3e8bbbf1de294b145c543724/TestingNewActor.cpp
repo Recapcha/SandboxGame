@@ -185,22 +185,9 @@ void ATestingNewActor::SetColor(const FLinearColor& Color)
 
 void ATestingNewActor::OnTimerFired()
 {
-    if (++TimerCount <= MaxTimerCount)
-    {
-        const FLinearColor NewColor = FLinearColor::MakeRandomColor();
-
-        //TimerCount передается по значению, потому что спецификатор %i требует значение типа int.
-        //*NewColor.ToString() передается как указатель, потому что спецификатор % s требует указатель на строку типа const TCHAR *.
-        UE_LOG(LogForTestingNewActor, Display, TEXT("TimerCount: %i, Color to set  up: %s"), TimerCount, *NewColor.ToString());
-        SetColor(NewColor);
-    }
-    else
-    {
-        UE_LOG(LogForTestingNewActor, Display, TEXT("Timer has been stopped!"));
-
-        //остановка таймера, какой таймер остановить
-        GetWorldTimerManager().ClearTimer(TimerHandle);
-    }
+    const FLinearColor NewColor = FLinearColor::MakeRandomColor();
+    UE_LOG(LogForTestingNewActor, Display, TEXT("Color to set  up: %s"), *NewColor.ToString());
+    SetColor(NewColor);
 }
 
 void ATestingNewActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)

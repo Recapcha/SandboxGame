@@ -120,12 +120,6 @@ private:
     //Создание перменной класса таймера
     FTimerHandle TimerHandle;
 
-    //количетсво раз сколько сработать до конца 
-    const int32 MaxTimerCount = 5;
-
-    //счетчик срабатывания 
-    int32 TimerCount = 0;
-
     void PrintTypes();
     void PrintStringTypes();
     void PrintTransform();
