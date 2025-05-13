@@ -61,6 +61,9 @@ public:
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* BaseMesh;
 
+    //Функция для изменения GeometryData 
+    void SetGeometryData(const FGeometrydataTestingActor& Data) { GeometryData = Data; }
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;

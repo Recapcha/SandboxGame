@@ -33,7 +33,6 @@ void ATestingNewActor::BeginPlay()
 
     //printStringTypes();
     //printTypes();
-    //HandleMovement();
     //SetColor(GeometryData.Color);
 
     //вызов функции установки таймера с передачей значений
@@ -48,6 +47,8 @@ void ATestingNewActor::Tick(float DeltaTime)
 {
     //Работа в Tick
     Super::Tick(DeltaTime);
+
+    HandleMovement();
 }
 
 void ATestingNewActor::PrintTypes()
@@ -117,8 +118,11 @@ void ATestingNewActor::PrintStringTypes()
     //ключ позволяет сообщения с одинаковыми ключами повторно не выводится на экран
     //3.0f время
     //цвет и имя, следующии остаются без изменения. Так же в последнем имеется возможнсть поменять размер
-    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, Name);
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, Stat, true, FVector2D(1.5f, 1.5f));
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, Name);
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, Stat, true, FVector2D(1.5f, 1.5f));
+    }
 }
 
 void ATestingNewActor::PrintTransform()
@@ -148,7 +152,7 @@ void ATestingNewActor::PrintTransform()
 
 void ATestingNewActor::HandleMovement()
 {
-    UE_LOG(LogForTestingNewActor, Warning, TEXT("HandleMovement"));
+    //UE_LOG(LogForTestingNewActor, Warning, TEXT("HandleMovement"));
 
     switch (GeometryData.MoveType)
     {
@@ -156,9 +160,12 @@ void ATestingNewActor::HandleMovement()
     {
         //В переменную CurrentLocation, текующей позиции. типа FVector присваиваем
         FVector CurrentLocation = GetActorLocation();
-        float Time = GetWorld()->GetTimeSeconds();
-        CurrentLocation.Z = InitialLocation.Z + GeometryData.Amplitude * FMath::Sin(GeometryData.Frequency * Time);
-        SetActorLocation(CurrentLocation);
+        if (GetWorld())
+        {
+            float Time = GetWorld()->GetTimeSeconds();
+            CurrentLocation.Z = InitialLocation.Z + GeometryData.Amplitude * FMath::Sin(GeometryData.Frequency * Time);
+            SetActorLocation(CurrentLocation);
+        }
     }
     break;
     case EMovementTypeTestingActor::STATIC:
@@ -170,16 +177,19 @@ void ATestingNewActor::HandleMovement()
 
 void ATestingNewActor::SetColor(const FLinearColor& Color)
 {
-    //Создание материала
-    //В указатель
-    UMaterialInstanceDynamic* DynMaterial = BaseMesh->CreateAndSetMaterialInstanceDynamic(0);
-    if (DynMaterial)
+    if (!BaseMesh)
     {
-        //У материала выставляем цвет в его параметре Color
-        //при старте цвет изменить на желтый, если параметр совпадает он сам изменит ему цвет
-        //выбирать конкретный материал не нужно, он реагирует только на параметры
-        //FLinearColor - 32 битный цвет, FColor - 8бит
-        DynMaterial->SetVectorParameterValue("Color", Color);
+        //Создание материала
+        //В указатель
+        UMaterialInstanceDynamic* DynMaterial = BaseMesh->CreateAndSetMaterialInstanceDynamic(0);
+        if (DynMaterial)
+        {
+            //У материала выставляем цвет в его параметре Color
+            //при старте цвет изменить на желтый, если параметр совпадает он сам изменит ему цвет
+            //выбирать конкретный материал не нужно, он реагирует только на параметры
+            //FLinearColor - 32 битный цвет, FColor - 8бит
+            DynMaterial->SetVectorParameterValue("Color", Color);
+        }
     }
 }
 
