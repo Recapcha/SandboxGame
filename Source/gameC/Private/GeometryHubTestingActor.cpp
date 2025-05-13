@@ -3,6 +3,8 @@
 #include "GeometryHubTestingActor.h"
 #include "Engine/World.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogHubActor, All, All);
+
 // Sets default values
 AGeometryHubTestingActor::AGeometryHubTestingActor()
 {
@@ -15,6 +17,19 @@ void AGeometryHubTestingActor::BeginPlay()
 {
     Super::BeginPlay();
 
+    //SpawnActors1();
+    //SpawnActors2();
+    SpawnActors3();
+}
+
+// Called every frame
+void AGeometryHubTestingActor::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+}
+
+void AGeometryHubTestingActor::SpawnActors1()
+{
     //указатель на мир игры, в нем находится функция спавна
     //GetWorld() - возвращает указатель на глобальный объект мира игры
     UWorld* World = GetWorld();
@@ -44,7 +59,16 @@ void AGeometryHubTestingActor::BeginPlay()
                 Geometry->SetGeometryData(Data);
             }
         }
+    }
+}
 
+void AGeometryHubTestingActor::SpawnActors2()
+{
+    //указатель на мир игры, в нем находится функция спавна
+    //GetWorld() - возвращает указатель на глобальный объект мира игры
+    UWorld* World = GetWorld();
+    if (World)
+    {
         //для 10 элементов
         for (int32 i = 0; i < 10; i++)
         {
@@ -66,6 +90,16 @@ void AGeometryHubTestingActor::BeginPlay()
                 Geometry->FinishSpawning(GeometryTransform);
             }
         }
+    }
+}
+
+void AGeometryHubTestingActor::SpawnActors3()
+{
+    //указатель на мир игры, в нем находится функция спавна
+    //GetWorld() - возвращает указатель на глобальный объект мира игры
+    UWorld* World = GetWorld();
+    if (World)
+    {
 
         //для всех объектов находящихся в массиве GeometryPayloads
         //разделяет объявление переменной (const FGeometryPayloadTestingActor Payload) цикла
@@ -123,7 +157,10 @@ void AGeometryHubTestingActor::BeginPlay()
                 //Вызывает PostInitializeComponents().
                 //Вызывает BeginPlay().
                 //После вызова этой функции актор считается полностью “живым” и активным в мире.
-                //
+
+                Geometry->OnColorChanged.AddDynamic(this, &AGeometryHubTestingActor::OnColorChanged);
+                Geometry->OnTimerFinished.AddUObject(this, &AGeometryHubTestingActor::OnTimerFinished);
+
                 //Payload.InitialTransform: В FinishSpawning также передается трансформация.
                 Geometry->FinishSpawning(Payload.InitialTransform);
             }
@@ -131,8 +168,26 @@ void AGeometryHubTestingActor::BeginPlay()
     }
 }
 
-// Called every frame
-void AGeometryHubTestingActor::Tick(float DeltaTime)
+//функция при срабатывании делегатов
+void AGeometryHubTestingActor::OnColorChanged(const FLinearColor& Color, const FString& Name)
 {
-    Super::Tick(DeltaTime);
+    UE_LOG(LogHubActor, Warning, TEXT("Actor name: %s Color: %s"), *Name, *Color.ToString());
+}
+
+void AGeometryHubTestingActor::OnTimerFinished(AActor* Actor)
+{
+    if (!Actor) return;
+    UE_LOG(LogHubActor, Error, TEXT("Timer finished: %s"), *Actor->GetName());
+
+    //Даункастинг, преобразует указатель на базовый класс на указатель на класс наследника
+    ATestingNewActor* Geometry = Cast<ATestingNewActor>(Actor);
+    if (!Geometry) return;
+
+    UE_LOG(LogHubActor, Error, TEXT("Cast success, amplitude %f"), Geometry->GetGeometryData().Amplitude);
+
+    //удаление актора со сцены
+    Geometry->Destroy();
+
+    //через 2 сек вызовется destroy
+    //Geometry->SetLifeSpan(2.0f);
 }

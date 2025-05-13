@@ -55,4 +55,16 @@ protected:
 public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
+
+private:
+    void SpawnActors1();
+    void SpawnActors2();
+    void SpawnActors3();
+
+    //Функция на срабатывание делегатов
+    //Функции которые мы добавляем к динамическим дилегатам, должны быть помечены UFUNCTION
+    UFUNCTION()
+    void OnColorChanged(const FLinearColor& Color, const FString& Name);
+
+    void OnTimerFinished(AActor* Actor);
 };

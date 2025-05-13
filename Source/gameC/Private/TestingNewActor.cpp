@@ -177,7 +177,7 @@ void ATestingNewActor::HandleMovement()
 
 void ATestingNewActor::SetColor(const FLinearColor& Color)
 {
-    if (!BaseMesh)
+    if (BaseMesh)
     {
         //Создание материала
         //В указатель
@@ -203,6 +203,11 @@ void ATestingNewActor::OnTimerFired()
         //*NewColor.ToString() передается как указатель, потому что спецификатор % s требует указатель на строку типа const TCHAR *.
         UE_LOG(LogForTestingNewActor, Display, TEXT("TimerCount: %i, Color to set  up: %s"), TimerCount, *NewColor.ToString());
         SetColor(NewColor);
+        
+        //Вызов делегата, говорит "Я Сработал!"
+        //Когда где либо кто то получает сообщение что тут сработал делегат 
+        //начинает логика из него 
+        OnColorChanged.Broadcast(NewColor, GetName());
     }
     else
     {
@@ -210,6 +215,9 @@ void ATestingNewActor::OnTimerFired()
 
         //остановка таймера, какой таймер остановить
         GetWorldTimerManager().ClearTimer(TimerHandle);
+
+        //Вызов второго делегата, когда таймер закончил работу
+        OnTimerFinished.Broadcast(this);
     }
 }
 
@@ -241,4 +249,10 @@ void ATestingNewActor::OnConstruction(const FTransform& Transform)
     Super::OnConstruction(Transform);
 
     //SetColor(GeometryData.Color = FLinearColor::Black);
+}
+
+void ATestingNewActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    UE_LOG(LogForTestingNewActor, Error, TEXT("Actor has been destroyed"));
+    Super::EndPlay(EndPlayReason);
 }
