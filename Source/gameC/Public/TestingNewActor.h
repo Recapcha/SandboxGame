@@ -96,6 +96,7 @@ protected:
     //Аналог Construction Script 
     virtual void OnConstruction(const FTransform& Transform) override;
 
+    //виртуальная функция конца 
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
     //чтобы указать что мы хотим видеть эти переменные в эдиторе класса

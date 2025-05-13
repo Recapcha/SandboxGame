@@ -19,13 +19,18 @@ void AGeometryHubTestingActor::BeginPlay()
 
     //SpawnActors1();
     //SpawnActors2();
-    SpawnActors3();
+    //SpawnActors3();
+    SpawnActors4();
 }
 
 // Called every frame
 void AGeometryHubTestingActor::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
+    //is valid вызывает is pending kill, когда мы вызываем дестрой
+    UE_LOG(LogHubActor, Warning, TEXT("property pointer %i, is valid %i"), PropertyActor != nullptr, IsValid(PropertyActor));
+    UE_LOG(LogHubActor, Error, TEXT("none property pointer %i, is valid %i"), NonePropertyActor != nullptr, IsValid(PropertyActor));
 }
 
 void AGeometryHubTestingActor::SpawnActors1()
@@ -166,6 +171,17 @@ void AGeometryHubTestingActor::SpawnActors3()
             }
         }
     }
+}
+
+void AGeometryHubTestingActor::SpawnActors4()
+{
+    if (!GetWorld()) return;
+
+    FTransform GeometryTransform = FTransform(FRotator::ZeroRotator, FVector(700.0f, 300.0f, 300.0f));
+    NonePropertyActor = GetWorld()->SpawnActor<ATestingNewActor>(GeometryClass, GeometryTransform);
+    
+    GeometryTransform = FTransform(FRotator::ZeroRotator, FVector(700.0f, 700.0f, 300.0f));
+    PropertyActor = GetWorld()->SpawnActor<ATestingNewActor>(GeometryClass, GeometryTransform);
 }
 
 //функция при срабатывании делегатов

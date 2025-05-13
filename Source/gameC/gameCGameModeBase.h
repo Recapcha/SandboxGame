@@ -15,5 +15,6 @@ class GAMEC_API AgameCGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 	
 	public:
+		//конструктор для гейммода 
 		AgameCGameModeBase();
 };

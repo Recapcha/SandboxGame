@@ -17,18 +17,23 @@ public:
 	// Sets default values for this pawn's properties
 	ASandboxPawn();
 
+	//создание переменной, корневой компонент
+	//Содержит в себе только трансформацию в мире, к нему можно при атачить другие компоненты 
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* SceneComponent;
 
+	//добавление статик меша
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* StaticMeshComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComponent;
 
+	//Скорость
 	UPROPERTY(EditAnywhere)
 	float Velocity = 300.0f;
 
+	//виртуальные функции, получения контроля над pawn
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void UnPossessed() override;
 
@@ -44,8 +49,11 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
+	//Вектор скорости pawn 
+	//по умолчанию он нулевой
 	FVector VelocityVector = FVector::ZeroVector;
 
+	//Функции движения вперед назад, принимают параметр
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
 };

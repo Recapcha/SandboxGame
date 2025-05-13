@@ -57,9 +57,16 @@ public:
     virtual void Tick(float DeltaTime) override;
 
 private:
+    ATestingNewActor* NonePropertyActor;
+
+    UPROPERTY()
+    ATestingNewActor* PropertyActor;
+
+
     void SpawnActors1();
     void SpawnActors2();
     void SpawnActors3();
+    void SpawnActors4();
 
     //Функция на срабатывание делегатов
     //Функции которые мы добавляем к динамическим дилегатам, должны быть помечены UFUNCTION
