@@ -3,8 +3,8 @@
 
 #include "gameCGameModeBase.h"
 //подключение класса pawn 
-#include "SandboxPawn.h"
-#include "SandboxPlayerController.h"
+#include "Gamec/Draft/SandboxPawn.h"
+#include "Gamec/Draft/SandboxPlayerController.h"
 
 AgameCGameModeBase::AgameCGameModeBase()
 {
