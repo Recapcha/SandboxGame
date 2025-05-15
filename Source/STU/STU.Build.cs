@@ -16,7 +16,7 @@ public class STU : ModuleRules
         PublicIncludePaths.AddRange(new string[]
         {
             "STU/Character",
-            "STU/Dev"
+            "STU/Dev",
             "STU/Draft",
             "STU/GameModes",
             "STU/Input",

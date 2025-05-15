@@ -57,7 +57,7 @@ void ASTUBaseCharacter::Tick(float DeltaTime)
     //FRadialDamageParams получение урона по радиусу 
     //затем указатель на Controller, кто нанес ущерб, можно узнать из какой команды
     //кому нанесен урон, себе this
-    TakeDamage(0.1f, FDamageEvent{}, Controller, this);
+    //TakeDamage(0.1f, FDamageEvent{}, Controller, this);
 }
 
 // Called to bind functionality to input
