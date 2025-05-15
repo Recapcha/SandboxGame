@@ -32,9 +32,12 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USTUHealthComponent* HealthComponent;
 
-    //показ количества хп у персонажа 
+    //показ количества хп у персонажа
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTextRenderComponent* HealthTextComponent;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage* DeathAnimMontage;
 
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -53,14 +56,21 @@ public:
     float GetMovementDirection() const;
 
 private:
+    //переменные для ускорение персонажа
     bool WantsToRun = false;
     bool IsMovingForward = false;
 
+    //функции на передвижения в стороны
     void MoveForward(float Amount);
     void MoveRight(float Amount);
 
+    //функции на ускорение персонажа
     void OnStartRunning();
     void OnStopRunning();
 
+    //функция на смерть персонажа
+    void OnDeath();
+     
+    //функция на изменение хп персонажа
+    void OnHealthChanged(float Health);
 };
-

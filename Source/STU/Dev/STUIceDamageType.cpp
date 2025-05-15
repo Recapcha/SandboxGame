@@ -1,5 +1,5 @@
 // Shoot Them Up Game, All Right Reserved.
 
 
-#include "Dev/STUIceDamageType.h"
+#include "STUIceDamageType.h"
 

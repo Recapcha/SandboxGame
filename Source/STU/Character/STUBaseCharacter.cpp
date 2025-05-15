@@ -35,11 +35,21 @@ void ASTUBaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
-    //проверка на 0 компоненты, работают только в девелоп билдак 
-    //не сбилдиться, если не подключен 
+    //проверка на 0 компоненты, работают только в девелоп билдак
+    //не сбилдиться, если не подключен
     check(HealthComponent);
     check(HealthTextComponent);
+    check(GetCharacterMovement());
 
+    OnHealthChanged(HealthComponent->GetHealth());
+
+    //подписываемся в начале на получение сообщения от делегатов 
+    //вызов функции при получении сообщения сметри персонажа с делегата, вызов функции OnDeath
+    //AddUObject такой вызов потому что мы обращаемся к делегату, только в C++
+    HealthComponent->OnDeath.AddUObject(this, &ASTUBaseCharacter::OnDeath);
+
+    //делагат на получение урона
+    HealthComponent->OnHealthChanged.AddUObject(this, &ASTUBaseCharacter::OnHealthChanged);
 }
 
 // Called every frame
@@ -47,14 +57,10 @@ void ASTUBaseCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    const auto Health = HealthComponent->GetHealth();
-    //показ текста над персонажем текстом 
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
-
-    //нанесение урона 
-    //кол вот урона, у FDamageEvent есть <class UDamageType>, с ним можно сделать тип урона 
-    //от него можно сделать собственный класс и свою проигровку получения урона 
-    //FRadialDamageParams получение урона по радиусу 
+    //нанесение урона
+    //кол вот урона, у FDamageEvent есть <class UDamageType>, с ним можно сделать тип урона
+    //от него можно сделать собственный класс и свою проигровку получения урона
+    //FRadialDamageParams получение урона по радиусу
     //затем указатель на Controller, кто нанес ущерб, можно узнать из какой команды
     //кому нанесен урон, себе this
     //TakeDamage(0.1f, FDamageEvent{}, Controller, this);
@@ -109,4 +115,24 @@ float ASTUBaseCharacter::GetMovementDirection() const
     const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
     const auto Degrees = FMath::RadiansToDegrees(AngleBetween);
     return CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
+}
+
+void ASTUBaseCharacter::OnDeath()
+{
+    UE_LOG(BaseCharacterLog, Display, TEXT("Player %s is dead"), *GetName());
+
+    //проиграть анимацию
+    PlayAnimMontage(DeathAnimMontage);
+
+    //останавка всего движения
+    GetCharacterMovement()->DisableMovement();
+
+    //уничтожение персонажа, через 5 сек
+    SetLifeSpan(5.0f);
+}
+
+void ASTUBaseCharacter::OnHealthChanged(float Health)
+{
+    //показ текста над персонажем текстом
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }

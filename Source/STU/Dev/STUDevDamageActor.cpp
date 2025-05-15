@@ -7,7 +7,6 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogDevDamageActor, All, All);
 
-
 // Sets default values
 ASTUDevDamageActor::ASTUDevDamageActor()
 {
@@ -35,9 +34,11 @@ void ASTUDevDamageActor::Tick(float DeltaTime)
 
     DrawDebugSphere(GetWorld(), GetActorLocation(), Radius, 24, SphereColor);
 
-    //получение урона 
-    UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), Radius, nullptr, {}, this, nullptr, DoFullDamage);
+    //получение урона
+    //UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), Radius, nullptr, {}, this, nullptr, DoFullDamage);
+
+    //получение урона и тип урона 
+    UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), Radius, DamageType, {}, this, nullptr, DoFullDamage);
 
     //UE_LOG(LogDevDamageActor, Display, TEXT("I hit damage: %f"), Damage);
-
 }
