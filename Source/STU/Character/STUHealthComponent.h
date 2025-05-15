@@ -14,6 +14,7 @@ class STU_API USTUHealthComponent : public UActorComponent
 public:
     USTUHealthComponent();
 
+    //фукнция возвращается значение health
     float GetHealth() const { return Health; }
 
 protected:
@@ -25,7 +26,12 @@ protected:
 private:
     float Health = 0.0f;
 
+    //берем настройки у делегата OnTakeAnyDamage, их берем для удобства
+    //актор, который получил урон
+    //урон
+    //тип урона
+    //какой контроллер нанес урон
+    //актор который нанес урон
     UFUNCTION()
-    void OnTakeAnyDamage(
-        AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+    void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 };

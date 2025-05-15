@@ -20,6 +20,7 @@ ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer& ObjInit)
     SpringArmComponent->SetupAttachment(GetRootComponent());
     SpringArmComponent->bUsePawnControlRotation = true;
 
+    //attach к корневому компоненту
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
 
@@ -34,8 +35,11 @@ void ASTUBaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
+    //проверка на 0 компоненты, работают только в девелоп билдак 
+    //не сбилдиться, если не подключен 
     check(HealthComponent);
     check(HealthTextComponent);
+
 }
 
 // Called every frame
@@ -44,8 +48,15 @@ void ASTUBaseCharacter::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     const auto Health = HealthComponent->GetHealth();
+    //показ текста над персонажем текстом 
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 
+    //нанесение урона 
+    //кол вот урона, у FDamageEvent есть <class UDamageType>, с ним можно сделать тип урона 
+    //от него можно сделать собственный класс и свою проигровку получения урона 
+    //FRadialDamageParams получение урона по радиусу 
+    //затем указатель на Controller, кто нанес ущерб, можно узнать из какой команды
+    //кому нанесен урон, себе this
     TakeDamage(0.1f, FDamageEvent{}, Controller, this);
 }
 
@@ -54,6 +65,7 @@ void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+    //вызов функции в зависимости от нажатии клавиши и где это будет вызываться this
     PlayerInputComponent->BindAxis("MoveForward", this, &ASTUBaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ASTUBaseCharacter::MoveRight);
     PlayerInputComponent->BindAxis("LookUp", this, &ASTUBaseCharacter::AddControllerPitchInput);

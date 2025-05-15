@@ -3,6 +3,7 @@
 #include "STU_CharacterMovementComponent.h"
 #include "STUBaseCharacter.h"
 
+//перезаписывание виртульной функции GetMaxSpeed отвечающей за максимальную скорость 
 float USTU_CharacterMovementComponent::GetMaxSpeed() const 
 {
     const float MaxSpeed = Super::GetMaxSpeed();

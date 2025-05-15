@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "STUBaseCharacter.generated.h"
 
+//указываем заранее классы
 class UCameraComponent;
 class USpringArmComponent;
 class USTUHealthComponent;
@@ -21,6 +22,7 @@ public:
     ASTUBaseCharacter(const FObjectInitializer& ObjInit);
 
 protected:
+    //создание камеры
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USpringArmComponent* SpringArmComponent;
 
@@ -30,6 +32,7 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USTUHealthComponent* HealthComponent;
 
+    //показ количества хп у персонажа 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTextRenderComponent* HealthTextComponent;
 
@@ -58,8 +61,6 @@ private:
 
     void OnStartRunning();
     void OnStopRunning();
-
-    void OnTakeDamage();
 
 };
 

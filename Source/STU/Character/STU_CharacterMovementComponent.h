@@ -15,6 +15,7 @@ class STU_API USTU_CharacterMovementComponent : public UCharacterMovementCompone
     GENERATED_BODY()
 
 public:
+    //переменная отвечающая за увелечение скорости при ускорении 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "1.5", ClampMax = "10.0"))
     float RunModifier = 2.0f;
 
