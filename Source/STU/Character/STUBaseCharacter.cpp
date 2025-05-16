@@ -8,6 +8,7 @@
 #include "STUHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Controller.h"
+#include "STU/Weapons/STUBaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -55,7 +56,8 @@ void ASTUBaseCharacter::BeginPlay()
     //Получение урона от падения
     LandedDelegate.AddDynamic(this, &ASTUBaseCharacter::OnGroundLanded);
 
-
+    //спавн оружия у персонажа в начале игры
+    SpawnWeapon();
 }
 
 // Called every frame
@@ -148,7 +150,6 @@ void ASTUBaseCharacter::OnDeath()
     }
 }
 
-
 void ASTUBaseCharacter::OnHealthChanged(float Health)
 {
     //показ текста над персонажем текстом
@@ -158,7 +159,7 @@ void ASTUBaseCharacter::OnHealthChanged(float Health)
 void ASTUBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 {
     //логируем текущую скорость падения
-    //скорость падения будет точно такая же как скорость передвижения по Z 
+    //скорость падения будет точно такая же как скорость передвижения по Z
     //так как значение по Z будет отрицательным при падение, до множаем на -1
     const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;
     UE_LOG(BaseCharacterLog, Display, TEXT("On landed: %f"), FallVelocityZ);
@@ -169,5 +170,20 @@ void ASTUBaseCharacter::OnGroundLanded(const FHitResult& Hit)
     const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
     UE_LOG(BaseCharacterLog, Display, TEXT("FinalDamage: %f"), FinalDamage);
     TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
+}
 
+void ASTUBaseCharacter::SpawnWeapon()
+{
+    //если указатель на мир игры не нулевой
+    if (!GetWorld()) return;
+
+    //спавн оружия
+    const auto Weapon = GetWorld()->SpawnActor<ASTUBaseWeapon>(WeaponClass);
+
+    if (Weapon)
+    {
+        //аттач к мешу, руке
+        FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
+        Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket");
+    }
 }

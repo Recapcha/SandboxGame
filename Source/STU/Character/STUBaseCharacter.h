@@ -11,6 +11,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class USTUHealthComponent;
 class UTextRenderComponent;
+class ASTUBaseWeapon;
 
 UCLASS()
 class STU_API ASTUBaseCharacter : public ACharacter
@@ -41,13 +42,16 @@ protected:
 
     //падение
     //меньше 900 скорости падения = 0  урона
-    //при 1200 = максимальный урон 
-    UPROPERTY(EditDefaultsOnly, Category = "Movement")
+    //при 1200 = максимальный урон
+    UPROPERTY(EditDefaultsOnly, Category = "Damage")
     FVector2D LandedDamageVelocity = FVector2D(900.0f, 1200.0f);
 
-    //минимальный и максимальный урон 
-    UPROPERTY(EditDefaultsOnly, Category = "Movement")
+    //минимальный и максимальный урон
+    UPROPERTY(EditDefaultsOnly, Category = "Damage")
     FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
+
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    TSubclassOf<ASTUBaseWeapon> WeaponClass;
 
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -80,10 +84,13 @@ private:
 
     //функция на смерть персонажа
     void OnDeath();
-     
+
     //функция на изменение хп персонажа
     void OnHealthChanged(float Health);
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult& Hit);
+
+    //спавн оружие и присоединение к персонажу
+    void SpawnWeapon();
 };

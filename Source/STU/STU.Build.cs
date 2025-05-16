@@ -21,7 +21,8 @@ public class STU : ModuleRules
             "STU/GameModes",
             "STU/Input",
             "STU/Player",
-            "STU/UI"
+            "STU/UI",
+            "STU/Weapons"
         });
 
         // Uncomment if you are using Slate UI
