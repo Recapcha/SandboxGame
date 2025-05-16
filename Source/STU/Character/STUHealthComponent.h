@@ -38,15 +38,15 @@ protected:
     bool AutoHeal = true;
 
     //частота прибавления здоровья
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
     float HealUpdateTime = 0.3f;
 
     //задержка перед добавлением здоровья
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
     float HealDelay = 3.0f;
 
     //сколько за один раз прибавляется здоровья
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
     float HealModifier = 1.0f;
 
     virtual void BeginPlay() override;

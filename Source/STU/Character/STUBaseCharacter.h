@@ -39,6 +39,16 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     UAnimMontage* DeathAnimMontage;
 
+    //падение
+    //меньше 900 скорости падения = 0  урона
+    //при 1200 = максимальный урон 
+    UPROPERTY(EditDefaultsOnly, Category = "Movement")
+    FVector2D LandedDamageVelocity = FVector2D(900.0f, 1200.0f);
+
+    //минимальный и максимальный урон 
+    UPROPERTY(EditDefaultsOnly, Category = "Movement")
+    FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
+
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
@@ -73,4 +83,7 @@ private:
      
     //функция на изменение хп персонажа
     void OnHealthChanged(float Health);
+
+    UFUNCTION()
+    void OnGroundLanded(const FHitResult& Hit);
 };

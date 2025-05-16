@@ -51,13 +51,11 @@ void ASTUBaseCharacter::BeginPlay()
 
     //делагат на получение урона
     HealthComponent->OnHealthChanged.AddUObject(this, &ASTUBaseCharacter::OnHealthChanged);
-}
+
+    //Получение урона от падения
+    LandedDelegate.AddDynamic(this, &ASTUBaseCharacter::OnGroundLanded);
 
 
-void ASTUBaseCharacter::OnHealthChanged(float Health)
-{
-    //показ текста над персонажем текстом
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 
 // Called every frame
@@ -150,3 +148,26 @@ void ASTUBaseCharacter::OnDeath()
     }
 }
 
+
+void ASTUBaseCharacter::OnHealthChanged(float Health)
+{
+    //показ текста над персонажем текстом
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+}
+
+void ASTUBaseCharacter::OnGroundLanded(const FHitResult& Hit)
+{
+    //логируем текущую скорость падения
+    //скорость падения будет точно такая же как скорость передвижения по Z 
+    //так как значение по Z будет отрицательным при падение, до множаем на -1
+    const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;
+    UE_LOG(BaseCharacterLog, Display, TEXT("On landed: %f"), FallVelocityZ);
+
+    if (FallVelocityZ < LandedDamageVelocity.X) return;
+
+    //нанесение урона в зависимости от высоты
+    const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
+    UE_LOG(BaseCharacterLog, Display, TEXT("FinalDamage: %f"), FinalDamage);
+    TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
+
+}
