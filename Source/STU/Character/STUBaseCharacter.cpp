@@ -42,7 +42,7 @@ void ASTUBaseCharacter::BeginPlay()
     check(HealthTextComponent);
     check(GetCharacterMovement());
 
-    //OnHealthChanged(HealthComponent->GetHealth());
+    OnHealthChanged(HealthComponent->GetHealth());
 
     //подписываемся в начале на получение сообщения от делегатов
     //вызов функции при получении сообщения сметри персонажа с делегата, вызов функции OnDeath
