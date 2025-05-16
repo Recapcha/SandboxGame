@@ -7,10 +7,10 @@
 #include "STUHealthComponent.generated.h"
 
 //делегат на смерть персонажа
-DECLARE_MULTICAST_DELEGATE(FOnDeath)
+DECLARE_MULTICAST_DELEGATE(FOnDeath);
 //делегат, когда меняются жизни персонажа
-//с помощью него можно убрать логику с тика, на проверку здоровья 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
+//с помощью него можно убрать логику с тика, на проверку здоровья
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class STU_API USTUHealthComponent : public UActorComponent
@@ -24,7 +24,7 @@ public:
     float GetHealth() const { return Health; }
 
     UFUNCTION(BlueprintCallable)
-    bool IsDead() const { return Health <= 0.0f; }
+    bool IsDead() const { return FMath::IsNearlyZero(Health); }
 
     FOnDeath OnDeath;
     FOnHealthChanged OnHealthChanged;
@@ -33,10 +33,29 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health", meta = (ClampMin = "0", ClampMax = "1000.0"))
     float MaxHealth = 100.0f;
 
+    //включать ли добавление здоровья
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    bool AutoHeal = true;
+
+    //частота прибавления здоровья
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    float HealUpdateTime = 0.3f;
+
+    //задержка перед добавлением здоровья
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    float HealDelay = 3.0f;
+
+    //сколько за один раз прибавляется здоровья
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    float HealModifier = 1.0f;
+
     virtual void BeginPlay() override;
 
 private:
     float Health = 0.0f;
+
+    //таймер Heal
+    FTimerHandle TimerHeal;
 
     //берем настройки у делегата OnTakeAnyDamage, их берем для удобства
     //актор, который получил урон
@@ -47,5 +66,6 @@ private:
     UFUNCTION()
     void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
-
+    void OnTimerHeal();
+    void SetHealth(float NewHealth);
 };

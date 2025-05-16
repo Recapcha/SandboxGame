@@ -7,6 +7,7 @@
 #include "STU_CharacterMovementComponent.h"
 #include "STUHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "GameFramework/Controller.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -41,15 +42,22 @@ void ASTUBaseCharacter::BeginPlay()
     check(HealthTextComponent);
     check(GetCharacterMovement());
 
-    OnHealthChanged(HealthComponent->GetHealth());
+    //OnHealthChanged(HealthComponent->GetHealth());
 
-    //подписываемся в начале на получение сообщения от делегатов 
+    //подписываемся в начале на получение сообщения от делегатов
     //вызов функции при получении сообщения сметри персонажа с делегата, вызов функции OnDeath
     //AddUObject такой вызов потому что мы обращаемся к делегату, только в C++
     HealthComponent->OnDeath.AddUObject(this, &ASTUBaseCharacter::OnDeath);
 
     //делагат на получение урона
     HealthComponent->OnHealthChanged.AddUObject(this, &ASTUBaseCharacter::OnHealthChanged);
+}
+
+
+void ASTUBaseCharacter::OnHealthChanged(float Health)
+{
+    //показ текста над персонажем текстом
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 
 // Called every frame
@@ -71,14 +79,17 @@ void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-    //вызов функции в зависимости от нажатии клавиши и где это будет вызываться this
-    PlayerInputComponent->BindAxis("MoveForward", this, &ASTUBaseCharacter::MoveForward);
-    PlayerInputComponent->BindAxis("MoveRight", this, &ASTUBaseCharacter::MoveRight);
-    PlayerInputComponent->BindAxis("LookUp", this, &ASTUBaseCharacter::AddControllerPitchInput);
-    PlayerInputComponent->BindAxis("TurnAround", this, &ASTUBaseCharacter::AddControllerYawInput);
-    PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTUBaseCharacter::Jump);
-    PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ASTUBaseCharacter::OnStartRunning);
-    PlayerInputComponent->BindAction("Run", IE_Released, this, &ASTUBaseCharacter::OnStopRunning);
+    if (PlayerInputComponent)
+    {
+        //вызов функции в зависимости от нажатии клавиши и где это будет вызываться this
+        PlayerInputComponent->BindAxis("MoveForward", this, &ASTUBaseCharacter::MoveForward);
+        PlayerInputComponent->BindAxis("MoveRight", this, &ASTUBaseCharacter::MoveRight);
+        PlayerInputComponent->BindAxis("LookUp", this, &ASTUBaseCharacter::AddControllerPitchInput);
+        PlayerInputComponent->BindAxis("TurnAround", this, &ASTUBaseCharacter::AddControllerYawInput);
+        PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTUBaseCharacter::Jump);
+        PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ASTUBaseCharacter::OnStartRunning);
+        PlayerInputComponent->BindAction("Run", IE_Released, this, &ASTUBaseCharacter::OnStopRunning);
+    }
 }
 
 void ASTUBaseCharacter::MoveForward(float Amount)
@@ -129,10 +140,13 @@ void ASTUBaseCharacter::OnDeath()
 
     //уничтожение персонажа, через 5 сек
     SetLifeSpan(5.0f);
+
+    //при смерти переключение на стандартный режим наблюдателя
+    //если зайти по пути controller - ctrl +f ChangeState - f12 -BeginSpectatingState
+    //можно увидеть то как запускается функция UnPosses() и удаляется старый pawn
+    if (Controller)
+    {
+        Controller->ChangeState(NAME_Spectating);
+    }
 }
 
-void ASTUBaseCharacter::OnHealthChanged(float Health)
-{
-    //показ текста над персонажем текстом
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
-}
