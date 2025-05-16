@@ -1,0 +1,32 @@
+// Shoot Them Up Game, All Right Reserved.
+
+
+#include "STUGameHUD.h"
+#include "Engine/Canvas.h"
+
+//перезапись виртуальной функции 
+void ASTUGameHUD::DrawHUD()
+{
+    //вызов родительской функции
+    Super::DrawHUD();
+
+    DrawCrossHair();
+}
+
+void ASTUGameHUD::DrawCrossHair()
+{
+    //рисование точки в центре
+    const TInterval<float> Center(Canvas->SizeX * 0.5f, Canvas->SizeY * 0.5f);
+
+    //половинки влево, вправо, вверх, вниз
+    const float HalfLineSize = 10.0f;
+    const float LineThickness = 2.0f;
+    const FLinearColor LineColor = FLinearColor::Green;
+
+    //функция которая умеет рисовать линии 
+    //горизонтальная линия 
+    DrawLine(Center.Min - HalfLineSize, Center.Max, Center.Min + HalfLineSize, Center.Max, LineColor, LineThickness);
+
+    //вертикальная линия
+    DrawLine(Center.Min, Center.Max - HalfLineSize, Center.Min, Center.Max + HalfLineSize, LineColor, LineThickness);
+}

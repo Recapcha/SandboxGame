@@ -21,6 +21,8 @@ ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer& ObjInit)
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
     SpringArmComponent->SetupAttachment(GetRootComponent());
     SpringArmComponent->bUsePawnControlRotation = true;
+    SpringArmComponent->SocketOffset = FVector(0.0f, 100.0f, 80.0f);
+    SpringArmComponent->TargetArmLength = 600.0f;
 
     //attach к корневому компоненту
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
@@ -30,6 +32,8 @@ ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer& ObjInit)
 
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
+    //можем видеть только на компонентах не принадлежащик к нам акторам 
+    HealthTextComponent->SetOwnerNoSee(true);
 }
 
 // Called when the game starts or when spawned
