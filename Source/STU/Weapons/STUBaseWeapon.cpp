@@ -53,6 +53,11 @@ void ASTUBaseWeapon::MakeShot()
 
         //вывод кости в которую попали
         UE_LOG(LogBaseWeapon, Display, TEXT("Bone: %s"), *HitResult.BoneName.ToString());
+
+        //
+        if (!HitResult.GetActor()) return;
+        UE_LOG(LogBaseWeapon, Display, TEXT("Actor: %s"), *HitResult.GetActor()->GetName());
+        //UE_LOG(LogBaseWeapon, Display, TEXT("Actor: %s"), *GetNameSafe(HitResult.GetActor()));
     }
     else
     {
