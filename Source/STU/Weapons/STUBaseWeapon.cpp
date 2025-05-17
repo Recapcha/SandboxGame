@@ -6,6 +6,9 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
+#include "STU/Character/STUBaseCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "STU/Dev/STUFireDamageType.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 
@@ -55,9 +58,20 @@ void ASTUBaseWeapon::MakeShot()
         UE_LOG(LogBaseWeapon, Display, TEXT("Bone: %s"), *HitResult.BoneName.ToString());
 
         //
-        if (!HitResult.GetActor()) return;
-        UE_LOG(LogBaseWeapon, Display, TEXT("Actor: %s"), *HitResult.GetActor()->GetName());
+        AActor* HitActor = HitResult.GetActor();
+
+        if (!HitActor) return;
+        UE_LOG(LogBaseWeapon, Display, TEXT("Actor: %s"), *HitActor->GetName());
         //UE_LOG(LogBaseWeapon, Display, TEXT("Actor: %s"), *GetNameSafe(HitResult.GetActor()));
+
+        if (HitActor->IsA<ASTUBaseCharacter>())
+        {
+            if (DamageTypeClass) return;
+
+
+            UE_LOG(LogBaseWeapon, Display, TEXT("EnemyActor is find!"));
+            UGameplayStatics::ApplyDamage(HitActor, 10.0f, nullptr, this, DamageTypeClass);
+        }
     }
     else
     {

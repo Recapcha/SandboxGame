@@ -29,6 +29,9 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
     float TraceMaxDistance = 1500.0f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSubclassOf<UDamageType> DamageTypeClass;
+
     virtual void BeginPlay() override;
 
     void MakeShot();
