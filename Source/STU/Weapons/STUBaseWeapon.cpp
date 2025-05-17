@@ -47,6 +47,9 @@ void ASTUBaseWeapon::MakeShot()
 
     if (HitResult.bBlockingHit)
     {
+        //вызов фукнции нанесения урона
+        MakeDamage(HitResult);
+
         //рисуем линию
         //persistance - отрисовка один раз
         DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Red, false, 5.0f, 0, 3.0f);
@@ -57,21 +60,22 @@ void ASTUBaseWeapon::MakeShot()
         //вывод кости в которую попали
         UE_LOG(LogBaseWeapon, Display, TEXT("Bone: %s"), *HitResult.BoneName.ToString());
 
-        //
-        AActor* HitActor = HitResult.GetActor();
 
-        if (!HitActor) return;
-        UE_LOG(LogBaseWeapon, Display, TEXT("Actor: %s"), *HitActor->GetName());
-        //UE_LOG(LogBaseWeapon, Display, TEXT("Actor: %s"), *GetNameSafe(HitResult.GetActor()));
+        //----------
+        //AActor* HitActor = HitResult.GetActor();
 
-        if (HitActor->IsA<ASTUBaseCharacter>())
-        {
-            if (DamageTypeClass) return;
+        //if (!HitActor) return;
+        //UE_LOG(LogBaseWeapon, Display, TEXT("Actor: %s"), *HitActor->GetName());
+        ////UE_LOG(LogBaseWeapon, Display, TEXT("Actor: %s"), *GetNameSafe(HitResult.GetActor()));
+
+        //if (HitActor->IsA<ASTUBaseCharacter>())
+        //{
+        //    if (DamageTypeClass) return;
 
 
-            UE_LOG(LogBaseWeapon, Display, TEXT("EnemyActor is find!"));
-            UGameplayStatics::ApplyDamage(HitActor, 10.0f, nullptr, this, DamageTypeClass);
-        }
+        //    UE_LOG(LogBaseWeapon, Display, TEXT("EnemyActor is find!"));
+        //    UGameplayStatics::ApplyDamage(HitActor, 10.0f, nullptr, this, DamageTypeClass);
+        //}
     }
     else
     {
@@ -138,4 +142,12 @@ void ASTUBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart, c
     //записывает данные в HitResult
     //блокает для всех видных объектов
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, CollisionParams);
+}
+
+void ASTUBaseWeapon::MakeDamage(FHitResult& HitResult)
+{
+    const auto DamagedActor = HitResult.GetActor();
+    if (!DamagedActor) return;
+
+    DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this);
 }

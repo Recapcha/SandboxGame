@@ -32,6 +32,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSubclassOf<UDamageType> DamageTypeClass;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float DamageAmount = 10.0f;
+
     virtual void BeginPlay() override;
 
     void MakeShot();
@@ -41,4 +44,5 @@ protected:
     FVector GetMuzzleWorldLocation() const;
     bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
     void MakeHit(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd);
+    void MakeDamage(FHitResult& HitResult);
 };

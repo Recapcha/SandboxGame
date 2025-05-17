@@ -1,14 +1,16 @@
 // Shoot Them Up Game, All Right Reserved.
 
-#include "STUBaseCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "STU_CharacterMovementComponent.h"
-#include "STUHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "STU_CharacterMovementComponent.h"
 #include "STU/Character/STUWeaponComponent.h"
+#include "STUHealthComponent.h"
+#include "STUBaseCharacter.h"
 #include "GameFramework/Controller.h"
+#include "GameFramework/SpringArmComponent.h"
+
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -154,6 +156,8 @@ void ASTUBaseCharacter::OnDeath()
     {
         Controller->ChangeState(NAME_Spectating);
     }
+
+    GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
 
 void ASTUBaseCharacter::OnHealthChanged(float Health)
