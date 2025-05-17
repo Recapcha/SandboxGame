@@ -15,10 +15,10 @@ void ASTUGameHUD::DrawHUD()
 
 void ASTUGameHUD::DrawCrossHair()
 {
-    //рисование точки в центре
+    //Определение центра
     const TInterval<float> Center(Canvas->SizeX * 0.5f, Canvas->SizeY * 0.5f);
 
-    //половинки влево, вправо, вверх, вниз
+    //ширини и длина, цвет
     const float HalfLineSize = 10.0f;
     const float LineThickness = 2.0f;
     const FLinearColor LineColor = FLinearColor::Green;

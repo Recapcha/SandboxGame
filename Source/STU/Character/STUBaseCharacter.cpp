@@ -7,8 +7,8 @@
 #include "STU_CharacterMovementComponent.h"
 #include "STUHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "STU/Character/STUWeaponComponent.h"
 #include "GameFramework/Controller.h"
-#include "STU/Weapons/STUBaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -32,8 +32,10 @@ ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer& ObjInit)
 
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
-    //можем видеть только на компонентах не принадлежащик к нам акторам 
+    //можем видеть только на компонентах не принадлежащик к нам акторам
     HealthTextComponent->SetOwnerNoSee(true);
+
+    WeaponComponent = CreateDefaultSubobject<USTUWeaponComponent>("WeaponComponent");
 }
 
 // Called when the game starts or when spawned
@@ -59,9 +61,6 @@ void ASTUBaseCharacter::BeginPlay()
 
     //Получение урона от падения
     LandedDelegate.AddDynamic(this, &ASTUBaseCharacter::OnGroundLanded);
-
-    //спавн оружия у персонажа в начале игры
-    SpawnWeapon();
 }
 
 // Called every frame
@@ -83,17 +82,20 @@ void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-    if (PlayerInputComponent)
-    {
-        //вызов функции в зависимости от нажатии клавиши и где это будет вызываться this
-        PlayerInputComponent->BindAxis("MoveForward", this, &ASTUBaseCharacter::MoveForward);
-        PlayerInputComponent->BindAxis("MoveRight", this, &ASTUBaseCharacter::MoveRight);
-        PlayerInputComponent->BindAxis("LookUp", this, &ASTUBaseCharacter::AddControllerPitchInput);
-        PlayerInputComponent->BindAxis("TurnAround", this, &ASTUBaseCharacter::AddControllerYawInput);
-        PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTUBaseCharacter::Jump);
-        PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ASTUBaseCharacter::OnStartRunning);
-        PlayerInputComponent->BindAction("Run", IE_Released, this, &ASTUBaseCharacter::OnStopRunning);
-    }
+    check(PlayerInputComponent);
+    check(WeaponComponent);
+
+
+    //вызов функции в зависимости от нажатии клавиши и где это будет вызываться this
+    PlayerInputComponent->BindAxis("MoveForward", this, &ASTUBaseCharacter::MoveForward);
+    PlayerInputComponent->BindAxis("MoveRight", this, &ASTUBaseCharacter::MoveRight);
+    PlayerInputComponent->BindAxis("LookUp", this, &ASTUBaseCharacter::AddControllerPitchInput);
+    PlayerInputComponent->BindAxis("TurnAround", this, &ASTUBaseCharacter::AddControllerYawInput);
+    PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTUBaseCharacter::Jump);
+    PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ASTUBaseCharacter::OnStartRunning);
+    PlayerInputComponent->BindAction("Run", IE_Released, this, &ASTUBaseCharacter::OnStopRunning);
+    PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USTUWeaponComponent::Fire);
+
 }
 
 void ASTUBaseCharacter::MoveForward(float Amount)
@@ -174,20 +176,4 @@ void ASTUBaseCharacter::OnGroundLanded(const FHitResult& Hit)
     const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
     UE_LOG(BaseCharacterLog, Display, TEXT("FinalDamage: %f"), FinalDamage);
     TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
-}
-
-void ASTUBaseCharacter::SpawnWeapon()
-{
-    //если указатель на мир игры не нулевой
-    if (!GetWorld()) return;
-
-    //спавн оружия
-    const auto Weapon = GetWorld()->SpawnActor<ASTUBaseWeapon>(WeaponClass);
-
-    if (Weapon)
-    {
-        //аттач к мешу, руке
-        FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
-        Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket");
-    }
 }
