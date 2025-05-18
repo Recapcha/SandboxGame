@@ -36,24 +36,15 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float DamageAmount = 10.0f;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float TimeBetweenShot = 0.1f;
-
-    //угол конуса, для разброса стрельбы из оружия 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float BulletSpread = 1.5f;
-
     virtual void BeginPlay() override;
 
-    void MakeShot();
+    virtual void MakeShot();
+
+    virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
 
     APlayerController* GetPlayerController() const;
     bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
     FVector GetMuzzleWorldLocation() const;
-    bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
     void MakeHit(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd);
     void MakeDamage(FHitResult& HitResult);
-
-private:
-    FTimerHandle ShotTimerHandle;
 };
