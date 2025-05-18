@@ -27,11 +27,15 @@ void ASTUBaseWeapon::BeginPlay()
     check(WeaponMesh);
 }
 
-void ASTUBaseWeapon::Fire()
+void ASTUBaseWeapon::StartFire()
 {
-    //UE_LOG(LogBaseWeapon, Display, TEXT("Fire!"))
-
     MakeShot();
+    GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &ASTUBaseWeapon::MakeShot, TimeBetweenShot, true);
+}
+
+void ASTUBaseWeapon::StopFire()
+{
+    GetWorldTimerManager().ClearTimer(ShotTimerHandle);
 }
 
 //выстрел
@@ -60,7 +64,6 @@ void ASTUBaseWeapon::MakeShot()
         //вывод кости в которую попали
         UE_LOG(LogBaseWeapon, Display, TEXT("Bone: %s"), *HitResult.BoneName.ToString());
 
-
         //----------
         //AActor* HitActor = HitResult.GetActor();
 
@@ -71,7 +74,6 @@ void ASTUBaseWeapon::MakeShot()
         //if (HitActor->IsA<ASTUBaseCharacter>())
         //{
         //    if (DamageTypeClass) return;
-
 
         //    UE_LOG(LogBaseWeapon, Display, TEXT("EnemyActor is find!"));
         //    UGameplayStatics::ApplyDamage(HitActor, 10.0f, nullptr, this, DamageTypeClass);
@@ -120,9 +122,12 @@ bool ASTUBaseWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
     //начальное положение это положение камеры
     TraceStart = ViewLocation;
 
+    const auto HalfRad = FMath::DegreesToRadians(BulletSpread);
+
     //берем forward vector из сокета или начала
     //направление вектора в какую сторону стрельба идет
-    const FVector ShootDirection = ViewRotation.Vector();
+    const FVector ShootDirection = FMath::VRandCone(ViewRotation.Vector(), HalfRad);
+
 
     //для точки конца берем начало + направление вектора с домноженная дистанцией (1500 ед)
     TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;

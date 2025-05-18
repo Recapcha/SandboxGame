@@ -42,10 +42,16 @@ void USTUWeaponComponent::SpawnWeapon()
     CurrentWeapon->SetOwner(Character);
 }
 
-void USTUWeaponComponent::Fire()
+void USTUWeaponComponent::StartFire()
 {
     if (!CurrentWeapon) return;
 
     //если есть оружие, то вызов из ASTUBaseWeapon Fire
-    CurrentWeapon->Fire();
+    CurrentWeapon->StartFire();
+}
+
+void USTUWeaponComponent::StopFire()
+{
+    if (!CurrentWeapon) return;
+    CurrentWeapon->StopFire();
 }
