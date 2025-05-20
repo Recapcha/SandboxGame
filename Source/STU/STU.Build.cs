@@ -15,6 +15,7 @@ public class STU : ModuleRules
         //при билде поиск #include в указанных папках
         PublicIncludePaths.AddRange(new string[]
         {
+            "STU/Animations",
             "STU/Character",
             "STU/Dev",
             "STU/Draft",

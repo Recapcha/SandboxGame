@@ -19,13 +19,18 @@ public:
 protected:
     virtual void MakeShot() override;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     float TimeBetweenShot = 0.1f;
 
     //угол конуса, для разброса стрельбы из оружия
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     float BulletSpread = 1.5f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+    float DamageAmount = 10.0f;
 
 private:
     FTimerHandle ShotTimerHandle;
+
+    void MakeDamage(FHitResult& HitResult);
 };
