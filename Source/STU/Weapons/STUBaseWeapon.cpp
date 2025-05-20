@@ -99,6 +99,7 @@ void ASTUBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart, c
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, CollisionParams);
 }
 
+//уменьшение патронов в магазине
 void ASTUBaseWeapon::DecreaseAmmo()
 {
     CurrentAmmo.Bullets--;
@@ -110,16 +111,19 @@ void ASTUBaseWeapon::DecreaseAmmo()
     }
 }
 
+//есть ли вообще везде патроны 
 bool ASTUBaseWeapon::IsAmmoEmpty() const
 {
     return !CurrentAmmo.Infinite && CurrentAmmo.Clips == 0 && IsClipEmpty();
 }
 
+//пустой ли магазин
 bool ASTUBaseWeapon::IsClipEmpty() const
 {
     return CurrentAmmo.Bullets == 0;
 }
 
+//перезарядка оружия 
 void ASTUBaseWeapon::ChangeClip()
 {
     CurrentAmmo.Bullets = DefaultAmmo.Bullets;
@@ -130,6 +134,7 @@ void ASTUBaseWeapon::ChangeClip()
     UE_LOG(LogBaseWeapon, Display, TEXT("-----Change Clip -----"));
 }
 
+//выводит информацию о боеприпасах 
 void ASTUBaseWeapon::LogAmmo()
 {
     FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + " / ";
