@@ -8,8 +8,8 @@ DEFINE_LOG_CATEGORY_STATIC(LogRifleWeapon, All, All);
 
 void ASTURifleWeapon::StartFire()
 {
-    MakeShot();
     GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &ASTURifleWeapon::MakeShot, TimeBetweenShot, true);
+    MakeShot();
 }
 
 void ASTURifleWeapon::StopFire()
@@ -20,7 +20,7 @@ void ASTURifleWeapon::StopFire()
 //выстрел
 void ASTURifleWeapon::MakeShot()
 {
-    UE_LOG(LogTemp, Display, TEXT("Make shot"));
+    //UE_LOG(LogTemp, Display, TEXT("Make shot"));
 
     if (!GetWorld() || IsAmmoEmpty())
     {

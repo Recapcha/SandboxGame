@@ -4,13 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "STU/Core/STUCoreTypes.h"
 #include "STUHealthComponent.generated.h"
 
-//делегат на смерть персонажа
-DECLARE_MULTICAST_DELEGATE(FOnDeath);
-//делегат, когда меняются жизни персонажа
-//с помощью него можно убрать логику с тика, на проверку здоровья
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float);
+
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class STU_API USTUHealthComponent : public UActorComponent

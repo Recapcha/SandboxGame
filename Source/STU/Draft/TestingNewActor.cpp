@@ -221,29 +221,6 @@ void ATestingNewActor::OnTimerFired()
     }
 }
 
-void ATestingNewActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
-{
-    Super::PostEditChangeProperty(PropertyChangedEvent);
-
-    //// 2. Устанавливаем цвет меша в редакторе.
-    //UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(BaseMesh->GetMaterial(0), this);
-    //if (DynamicMaterial)
-    //{
-    //    DynamicMaterial->SetVectorParameterValue(TEXT("Color"), FLinearColor::Yellow); // "Color" - имя параметра в material
-    //    BaseMesh->SetMaterial(0, DynamicMaterial);
-    //}
-
-    //UMaterialInstanceDynamic* DynMaterial = BaseMesh->CreateAndSetMaterialInstanceDynamic(0);
-    //if (DynMaterial)
-    //{
-    //    //У материала выставляем цвет в его параметре Color
-    //    //при старте цвет изменить на желтый, если параметр совпадает он сам изменит ему цвет
-    //    //выбирать конкретный материал не нужно, он реагирует только на параметры
-    //    //FLinearColor - 32 битный цвет, FColor - 8бит
-    //    DynMaterial->SetVectorParameterValue("Color", FLinearColor::Yellow);
-    //}
-}
-
 void ATestingNewActor::OnConstruction(const FTransform& Transform)
 {
     Super::OnConstruction(Transform);

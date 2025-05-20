@@ -17,6 +17,7 @@ public class STU : ModuleRules
         {
             "STU/Animations",
             "STU/Character",
+            "STU/Core",
             "STU/Dev",
             "STU/Draft",
             "STU/GameModes",

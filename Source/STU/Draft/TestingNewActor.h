@@ -88,10 +88,6 @@ protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
-    //Евент, если изменяется что то в едиторе то запускается этот евент
-    //В данном случае к моему цвету применяется другой цвет
-    virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-
     //функция которая срабатывает при создании 
     //Аналог Construction Script 
     virtual void OnConstruction(const FTransform& Transform) override;

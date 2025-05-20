@@ -75,3 +75,6 @@ DerivedDataCache/*
 
 # temp files
 enc_temp_folder/*
+
+# build files 
+WindowsNoEditor/

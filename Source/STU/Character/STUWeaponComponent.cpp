@@ -5,8 +5,11 @@
 #include "GameFramework/Character.h"
 #include "STU/Animations/STUEquipFinishAnimNotify.h"
 #include "STU/Animations/STUReloadFinishAnimNotify.h"
+#include "STU/Animations/AnimUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
+
+constexpr static int32 WeaponNum = 2;
 
 USTUWeaponComponent::USTUWeaponComponent()
 {
@@ -17,6 +20,8 @@ USTUWeaponComponent::USTUWeaponComponent()
 void USTUWeaponComponent::BeginPlay()
 {
     Super::BeginPlay();
+
+    checkf(WeaponData.Num() == WeaponNum, TEXT("Our character can hold only %i weapon items"), WeaponNum);
 
     CurrentWeaponIndex = 0;
     InitAnimations();
@@ -49,6 +54,7 @@ void USTUWeaponComponent::SpawnWeapons()
         auto Weapon = GetWorld()->SpawnActor<ASTUBaseWeapon>(OneWeaponData.WeaponClass);
         if (!Weapon) continue;
 
+        Weapon->OnClipEmpty.AddUObject(this, &USTUWeaponComponent::OnEmptyClip);
         Weapon->SetOwner(Character);
         Weapons.Add(Weapon);
 
@@ -153,20 +159,28 @@ void USTUWeaponComponent::InitAnimations()
 {
     //смена оружия
     //поиск по анимации смены оружия
-    auto EquipFinishNotify = FindNotifyByClass<USTUEquipFinishAnimNotify>(EquipAnimMontage);
+    auto EquipFinishNotify = AnimUtils::FindNotifyByClass<USTUEquipFinishAnimNotify>(EquipAnimMontage);
     if (EquipFinishNotify)
     {
         //подписываемся на делегат notify, при его проходе запускаем функцию OnEquipFinished
         EquipFinishNotify->OnNotified.AddUObject(this, &USTUWeaponComponent::OnEquipFinished);
+    }
+    else
+    {
+        UE_LOG(LogWeaponComponent, Error, TEXT("Equip anim notify is forgotten to set"));
+        checkNoEntry();
     }
 
     //перезарядка
     //поиск по массиву из анимация для перезарядки
     for (auto OneWeaponData : WeaponData)
     {
-        auto ReloadFinishNotify = FindNotifyByClass<USTUReloadFinishAnimNotify>(OneWeaponData.ReloadAnimMontage);
-        if (!ReloadFinishNotify) continue;
-
+        auto ReloadFinishNotify = AnimUtils::FindNotifyByClass<USTUReloadFinishAnimNotify>(OneWeaponData.ReloadAnimMontage);
+        if (!ReloadFinishNotify)
+        {
+            UE_LOG(LogWeaponComponent, Error, TEXT("Reload anim notify is forgotten to set"));
+            checkNoEntry();
+        }
         //если нашли подписывается на делегат notify и при его проходе запускаем функцию OnReloadFinished
         ReloadFinishNotify->OnNotified.AddUObject(this, &USTUWeaponComponent::OnReloadFinished);
     }
@@ -202,13 +216,29 @@ bool USTUWeaponComponent::CanEquip() const
 
 bool USTUWeaponComponent::CanReload() const
 {
-    return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress;
+    return CurrentWeapon            //
+           && !EquipAnimInProgress  //
+           && !ReloadAnimInProgress //
+           && CurrentWeapon->CanReload();
 }
 
 //Перезарядка
 void USTUWeaponComponent::Reload()
 {
+    ChangeClip();
+}
+
+void USTUWeaponComponent::OnEmptyClip()
+{
+    ChangeClip();
+}
+
+void USTUWeaponComponent::ChangeClip()
+{
     if (!CanReload()) return;
+    CurrentWeapon->StopFire();
+    CurrentWeapon->ChangeClip();
+
     ReloadAnimInProgress = true;
     PlayAnimMontage(CurrentReloadAnimMontage);
 }
