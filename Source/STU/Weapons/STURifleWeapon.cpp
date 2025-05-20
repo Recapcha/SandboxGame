@@ -1,12 +1,10 @@
 // Shoot Them Up Game, All Right Reserved.
 
-
 #include "STURifleWeapon.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogRifleWeapon, All, All);
-
 
 void ASTURifleWeapon::StartFire()
 {
@@ -22,10 +20,20 @@ void ASTURifleWeapon::StopFire()
 //выстрел
 void ASTURifleWeapon::MakeShot()
 {
-    if (!GetWorld()) return;
+    UE_LOG(LogTemp, Display, TEXT("Make shot"));
+
+    if (!GetWorld() || IsAmmoEmpty())
+    {
+        StopFire();
+        return;
+    }
 
     FVector TraceStart, TraceEnd;
-    if (!GetTraceData(TraceStart, TraceEnd)) return;
+    if (!GetTraceData(TraceStart, TraceEnd))
+    {
+        StopFire();
+        return;
+    }
 
     FHitResult HitResult;
     MakeHit(HitResult, TraceStart, TraceEnd);
@@ -44,21 +52,6 @@ void ASTURifleWeapon::MakeShot()
 
         //вывод кости в которую попали
         UE_LOG(LogRifleWeapon, Display, TEXT("Bone: %s"), *HitResult.BoneName.ToString());
-
-        //----------
-        //AActor* HitActor = HitResult.GetActor();
-
-        //if (!HitActor) return;
-        //UE_LOG(LogBaseWeapon, Display, TEXT("Actor: %s"), *HitActor->GetName());
-        ////UE_LOG(LogBaseWeapon, Display, TEXT("Actor: %s"), *GetNameSafe(HitResult.GetActor()));
-
-        //if (HitActor->IsA<ASTUBaseCharacter>())
-        //{
-        //    if (DamageTypeClass) return;
-
-        //    UE_LOG(LogBaseWeapon, Display, TEXT("EnemyActor is find!"));
-        //    UGameplayStatics::ApplyDamage(HitActor, 10.0f, nullptr, this, DamageTypeClass);
-        //}
     }
     else
     {
@@ -66,6 +59,8 @@ void ASTURifleWeapon::MakeShot()
         //persistance - отрисовка один раз
         DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), TraceEnd, FColor::Red, false, 5.0f, 0, 3.0f);
     }
+
+    DecreaseAmmo();
 }
 
 //получение данных для trace
