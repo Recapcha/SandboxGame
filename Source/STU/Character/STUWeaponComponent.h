@@ -9,8 +9,6 @@
 
 class ASTUBaseWeapon;
 
-
-
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class STU_API USTUWeaponComponent : public UActorComponent
 {
@@ -24,6 +22,9 @@ public:
     void StopFire();
     void NextWeapon();
     void Reload();
+
+    bool GetWeaponUIData(FWeaponUIData& UIData) const;
+    bool GetWeaponAmmoData(FAmmoData& AmmoData) const;
 
 protected:
     //массив структур

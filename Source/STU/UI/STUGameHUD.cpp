@@ -1,16 +1,28 @@
 // Shoot Them Up Game, All Right Reserved.
 
-
 #include "STUGameHUD.h"
 #include "Engine/Canvas.h"
+#include "Blueprint/UserWidget.h"
 
-//перезапись виртуальной функции 
+//перезапись виртуальной функции
 void ASTUGameHUD::DrawHUD()
 {
     //вызов родительской функции
     Super::DrawHUD();
 
-    DrawCrossHair();
+    //DrawCrossHair();
+}
+
+void ASTUGameHUD::BeginPlay()
+{
+    Super::BeginPlay();
+    
+    //подгрузка widget во вьюпорт
+    auto PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass);
+    if (PlayerHUDWidget)
+    {
+        PlayerHUDWidget->AddToViewport();
+    }
 }
 
 void ASTUGameHUD::DrawCrossHair()
@@ -23,8 +35,8 @@ void ASTUGameHUD::DrawCrossHair()
     const float LineThickness = 2.0f;
     const FLinearColor LineColor = FLinearColor::Green;
 
-    //функция которая умеет рисовать линии 
-    //горизонтальная линия 
+    //функция которая умеет рисовать линии
+    //горизонтальная линия
     DrawLine(Center.Min - HalfLineSize, Center.Max, Center.Min + HalfLineSize, Center.Max, LineColor, LineThickness);
 
     //вертикальная линия
