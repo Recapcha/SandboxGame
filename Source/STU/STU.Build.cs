@@ -22,6 +22,7 @@ public class STU : ModuleRules
             "STU/Draft",
             "STU/GameModes",
             "STU/Input",
+            "STU/Pickups",
             "STU/Player",
             "STU/UI",
             "STU/Weapons"
