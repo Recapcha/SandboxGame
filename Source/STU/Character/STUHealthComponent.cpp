@@ -16,6 +16,7 @@ USTUHealthComponent::USTUHealthComponent()
     PrimaryComponentTick.bCanEverTick = false;
 }
 
+//функция пополения здоровья 
 bool USTUHealthComponent::TryToAddHealth(float HealthAmount)
 {
     if (IsDead() || IsHealthFull()) return false;
