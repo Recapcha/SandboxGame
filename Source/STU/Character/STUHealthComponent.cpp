@@ -16,6 +16,21 @@ USTUHealthComponent::USTUHealthComponent()
     PrimaryComponentTick.bCanEverTick = false;
 }
 
+bool USTUHealthComponent::TryToAddHealth(float HealthAmount)
+{
+    if (IsDead() || IsHealthFull()) return false;
+    //UE_LOG(LogHealthComponent, Display, TEXT("Health is valid"));
+
+    SetHealth(Health + HealthAmount);
+
+    return true;
+}
+
+bool USTUHealthComponent::IsHealthFull() const
+{
+    return FMath::IsNearlyEqual(Health, MaxHealth);
+}
+
 // Called when the game starts
 void USTUHealthComponent::BeginPlay()
 {
@@ -67,7 +82,7 @@ void USTUHealthComponent::OnTimerHeal()
 {
     SetHealth(Health + HealModifier);
 
-    if (FMath::IsNearlyEqual(Health, MaxHealth) && GetWorld())
+    if (IsHealthFull() && GetWorld())
     {
         GetWorld()->GetTimerManager().ClearTimer(TimerHeal);
     }
