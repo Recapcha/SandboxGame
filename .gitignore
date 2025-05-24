@@ -78,3 +78,7 @@ enc_temp_folder/*
 
 # build files 
 WindowsNoEditor/
+
+# VFX big files, do not import yet 
+Realistic_Starter_VFX_Pack_Vol2/
+sA_Megapack_v1/

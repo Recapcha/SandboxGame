@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class UProjectileMovementComponent;
+class USTUWeaponFXComponent;
 
 UCLASS()
 class STU_API ASTUProjectile : public AActor
@@ -38,13 +39,16 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     float LifeSeconds = 5.0;
 
+    UPROPERTY(VisibleAnywhere, Category = "VFX")
+    USTUWeaponFXComponent* WeaponFXComponent;
+
     virtual void BeginPlay() override;
 
 private:
     FVector ShotDirection;
 
     UFUNCTION()
-    void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
+    void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
         UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
     AController* GetController() const;

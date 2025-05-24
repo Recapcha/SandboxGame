@@ -95,11 +95,20 @@ void ASTUBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart, c
     //акторы для игнора
     FCollisionQueryParams CollisionParams;
     CollisionParams.AddIgnoredActor(GetOwner());
+    //возвращаение попадание в phys mat
+    CollisionParams.bReturnPhysicalMaterial = true;
 
     //возвращает первый объект с которым будет пересечение
     //записывает данные в HitResult
     //блокает для всех видных объектов
-    GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, CollisionParams);
+    GetWorld()->LineTraceSingleByChannel       //
+        (                                      //
+            HitResult,                         //
+            TraceStart,                        //
+            TraceEnd,                          //
+            ECollisionChannel::ECC_Visibility, //
+            CollisionParams                    //
+        );
 }
 
 //уменьшение патронов в магазине
@@ -160,7 +169,7 @@ bool ASTUBaseWeapon::CanReload() const
     return CurrentAmmo.Bullets < DefaultAmmo.Bullets && CurrentAmmo.Clips > 0;
 }
 
-//пополенение патрон при подбирании 
+//пополенение патрон при подбирании
 bool ASTUBaseWeapon::TryToAddAmmo(int32 ClipsAmount)
 {
     if (CurrentAmmo.Infinite || IsAmmoFull() || ClipsAmount <= 0) return false;
